@@ -21,15 +21,12 @@ import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
 public class FirstServlet extends HttpServlet {
-	protected static int[] query = { 1, 6, 2, 8, 4, 11, 26, 38, 44 };/*query = { 1, 6, 2, 8, 4, 11, 26, 38, 44 };*/
-	protected static int Kday = 3; /*Kday = 3*/
+	protected static int[] query = {};/*query = { 1, 6, 2, 8, 4, 11, 26, 38, 44 };*/
+	protected static int Kday = 0; /*Kday = 3*/
 	protected static int POInum = 50;
 	protected static int iternum;
 	protected static Double[][] pheromone;
 	private static final long serialVersionUID = 1L;
-	
-	
-	
 	
 	public String getHTML() {
 	      URL url;
