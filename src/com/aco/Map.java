@@ -62,7 +62,7 @@ public class Map extends MapReduceBase implements Mapper<LongWritable, Text, Tex
 		{29, 68, 71, 31, 45, 83, 46, 91, 41, 6, 24, 10, 53, 31, 80, 39, 10, 51, 28, 69, 68, 2, 52, 33, 72, 77, 94, 6, 20, 95, 41, 76, 92, 60, 44, 78, 76, 92, 98, 51, 6, 7, 8, 19, 27, 65, 46, 39, 69, 0, } };
 	protected static Double[][] pheromone;
 	protected static int[] query = FirstServlet.query.clone();
-	private static int startA, seed;
+	private static int startA, seed,lastId, seedId;
 	private static double selectP;
 	private static boolean[] mark;
 	
@@ -71,6 +71,7 @@ public class Map extends MapReduceBase implements Mapper<LongWritable, Text, Tex
 	Map(){
 		startA = 0;
 		seed = rand.nextInt(50);
+		seedId = rand.nextInt(preReduce.count);
 		selectP = 0.0;
 		mark = new boolean[FirstServlet.POInum];
 		for( int i = 0; i < mark.length; i++ )
@@ -88,9 +89,16 @@ public class Map extends MapReduceBase implements Mapper<LongWritable, Text, Tex
 		String iter = iter_info[1];
 		int iter_weight = Integer.parseInt(iter_info[2]);
 		int iter_pathlength = Integer.parseInt(iter_info[3]);
-		
+
 		//startA
 		String iter_buffer = Reduce.iter_buffer;
+		String id_buffer = Reduce.id_buffer;
+		if (id_buffer == ""){
+			lastId = seedId;
+		} else {
+			String [] id_b = Reduce.id_buffer.split("\t");
+			lastId = Integer.parseInt(id_b[id_b.length-1]);
+		}
 		if( iter_buffer == "" ){
 			startA = seed;
 		}
@@ -126,13 +134,13 @@ public class Map extends MapReduceBase implements Mapper<LongWritable, Text, Tex
 //				System.out.println("No."+i+" selected it: "+selected_iter[i]);
 				String[] selected_POIs = selected_iter[i].split(":");
 				for( int p = 0; p < selected_POIs.length; p++ ){
-					mark[Integer.parseInt(selected_POIs[p])] = true;
+					mark[Integer.parseInt(selected_POIs[p])-1] = true;
 					total++;
 				}
 			}
 		}
 		for( int i = 0; i < POIs.length; i++ ){
-			if( mark[Integer.parseInt(POIs[i])] == true ){
+			if( mark[Integer.parseInt(POIs[i])-1] == true ){
 				dul++;
 			}
 		}
@@ -146,8 +154,9 @@ public class Map extends MapReduceBase implements Mapper<LongWritable, Text, Tex
 		Double P1 = 0.0, P2 = 0.0, P = 0.0;
 		int iter_end = Integer.parseInt(POIs[POIs.length-1]);
 		int iter_start = Integer.parseInt(POIs[0]);
-		P1 = Double.valueOf(iter_weight)/Math.pow((map_cost[startA][iter_end]+rate), 1.5)*Math.pow(pheromone[startA][iter_end], 0.5);
-		P2 = Double.valueOf(iter_weight)/Math.pow((map_cost[startA][iter_start]+rate), 1.5)*Math.pow(pheromone[startA][iter_end],0.5);
+		
+		P1 = Double.valueOf(iter_weight)/Math.pow((map_cost[startA-1][iter_end-1]+rate), 1.5)*Math.pow(pheromone[lastId][iterID], 0.5);
+		P2 = Double.valueOf(iter_weight)/Math.pow((map_cost[startA-1][iter_start-1]+rate), 1.5)*Math.pow(pheromone[lastId][iterID],0.5);
 		if( P1 > P2 )
 			P = P1;
 		else

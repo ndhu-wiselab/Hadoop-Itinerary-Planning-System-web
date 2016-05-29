@@ -2,9 +2,12 @@ package com.aco;
 
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapred.*;
 
@@ -60,24 +63,25 @@ public class Reduce extends MapReduceBase implements Reducer<Text, Text, Text, T
 				//System.out.println("No."+i+" selected it: "+selected_iter[i]);
 				String[] selected_POIs = selected_iter[i].split(":");
 				for( int p = 0; p < selected_POIs.length; p++ ){
-					mark[Integer.parseInt(selected_POIs[p])] = true;
+					mark[Integer.parseInt(selected_POIs[p])-1] = true;
 				}
 			}
 		}
 		String[] POIs = MAXiter.split(":");
 		String temp = "";
 		for(int i = 0; i < POIs.length; i++){
-			if(mark[Integer.parseInt(POIs[i])] == true){
+			if(mark[Integer.parseInt(POIs[i])-1] == true){
 				System.out.println("delete POI: "+POIs[i]);
-			}
-			else{
-				if( i == 0 )
+			} else {
+				if (temp == "") {
 					temp = POIs[i];
-				else
-					temp = temp+":"+POIs[i];
+				} else {
+					temp = temp + ":" + POIs[i];
+				}
 			}
 		}
 		MAXiter = temp;
+		
 		//record recently selected iter into buffer
 		if( iter_buffer == "" ){
 			iter_buffer = MAXiter;
@@ -101,6 +105,7 @@ public class Reduce extends MapReduceBase implements Reducer<Text, Text, Text, T
 		Double pher = 0.0;
 		pher = 1/Double.valueOf(MAXiter_pathlength);
 		System.out.println("pher: " + pher);
+		System.out.println(id_buffer);
 		String[] ITERs = id_buffer.split("\t");
 		if(ITERs.length > 1){
 			for( int i = 0; i < ITERs.length-1; i++ )

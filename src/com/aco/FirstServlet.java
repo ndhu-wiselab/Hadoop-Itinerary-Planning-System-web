@@ -21,8 +21,8 @@ import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
 public class FirstServlet extends HttpServlet {
-	protected static int[] query;/*query = { 1, 6, 2, 8, 4, 11, 26, 38, 44 };*/
-	protected static int Kday = 3;
+	protected static int[] query = { 1, 6, 2, 8, 4, 11, 26, 38, 44 };/*query = { 1, 6, 2, 8, 4, 11, 26, 38, 44 };*/
+	protected static int Kday = 3; /*Kday = 3*/
 	protected static int POInum = 50;
 	protected static int iternum;
 	protected static Double[][] pheromone;
@@ -73,14 +73,11 @@ public class FirstServlet extends HttpServlet {
     	Reduce.iter_buffer="";
 		/*get request*/
     	String[] req = new String[15];
-    	int q = 0;
-    	Enumeration paramNames = request.getParameterNames();
-    	System.out.println(paramNames);
-    	while(paramNames.hasMoreElements()) {
-    		req[q++] = (String)paramNames.nextElement();
-        }
-    	query = new int[q-1];
-    	for( int i = 0; i < q-1; i++ )
+    	Kday = Integer.parseInt(request.getParameter("Kday"));
+    	System.out.println("Kay = " + Kday);
+    	req = request.getParameterValues("POI");
+    	int [] query = new int[req.length];
+    	for( int i = 0; i < req.length; i++ )
     		query[i] = Integer.parseInt(req[i]);
     	for( int i = 0; i < query.length; i++ )
     		System.out.println(query[i]);
@@ -94,13 +91,13 @@ public class FirstServlet extends HttpServlet {
 		preconf.setInputFormat(TextInputFormat.class);
 		preconf.setOutputFormat(TextOutputFormat.class);
 		FileInputFormat.setInputPaths(preconf, new Path("hdfs://localhost:9000/user/hadoop/10round-9/part-00000"));
-		FileOutputFormat.setOutputPath(preconf, new Path("hdfs://localhost:9000/user/hadoop/intputData"));
+		FileOutputFormat.setOutputPath(preconf, new Path("hdfs://localhost:9000/user/hadoop/inputData"));
 		// TODO: specify a mapper and reducer
 		preconf.setMapperClass(preMap.class);
 		preconf.setReducerClass(preReduce.class);
 		preclient.setConf(preconf);
 		try{
-			Path indata = new Path("hdfs://localhost:9000/user/hadoop/intputData");
+			Path indata = new Path("hdfs://localhost:9000/user/hadoop/inputData");
 			if(indata.getFileSystem(preconf).exists(indata))
 				indata.getFileSystem(preconf).delete(indata);
 			JobClient.runJob(preconf);
@@ -119,7 +116,7 @@ public class FirstServlet extends HttpServlet {
 			// TODO: specify input and output DIRECTORIES (not files)
 			conf.setInputFormat(TextInputFormat.class);
 			conf.setOutputFormat(TextOutputFormat.class);
-			FileInputFormat.setInputPaths(conf, new Path("hdfs://localhost:9000/user/hadoop/intputData"));
+			FileInputFormat.setInputPaths(conf, new Path("hdfs://localhost:9000/user/hadoop/inputData"));
 			FileOutputFormat.setOutputPath(conf, new Path("hdfs://localhost:9000/user/hadoop/ACO_output"));
 			// TODO: specify a mapper and reducer
 			conf.setMapperClass(Map.class);
