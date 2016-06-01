@@ -17,8 +17,8 @@ public class Reduce extends MapReduceBase implements Reducer<Text, Text, Text, T
 	private static String MAXiter;
 	private static int MAXiter_weight;
 	private static int MAXiter_pathlength;
-	private static int sumWeight;
-	private static int sumPathlength;
+	protected static int sumWeight;
+	protected static int sumPathlength;
 	protected static String iter_buffer = "";
 	protected static String id_buffer = "";
 	protected static Double[][] pheromone;

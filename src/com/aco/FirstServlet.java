@@ -21,8 +21,8 @@ import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
 public class FirstServlet extends HttpServlet {
-	protected static int[] query = {};/*query = { 1, 6, 2, 8, 4, 11, 26, 38, 44 };*/
-	protected static int Kday = 0; /*Kday = 3*/
+	protected static int[] query = {1};/*query = { 1, 6, 2, 8, 4, 11, 26, 38, 44 };*/
+	protected static int Kday = 1; /*Kday = 3*/
 	protected static int POInum = 50;
 	protected static int iternum;
 	protected static Double[][] pheromone;
@@ -64,6 +64,7 @@ public class FirstServlet extends HttpServlet {
 	
     @SuppressWarnings("deprecation")
 	protected void doPost(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
+    	//request.setCharacterEncoding("UTF-8");
     	System.out.println("=================================");
     	System.out.println("dopost");
     	System.out.println("=================================");
@@ -72,12 +73,17 @@ public class FirstServlet extends HttpServlet {
     	String[] req = new String[15];
     	Kday = Integer.parseInt(request.getParameter("Kday"));
     	System.out.println("Kay = " + Kday);
-    	req = request.getParameterValues("POI");
-    	int [] query = new int[req.length];
-    	for( int i = 0; i < req.length; i++ )
-    		query[i] = Integer.parseInt(req[i]);
-    	for( int i = 0; i < query.length; i++ )
-    		System.out.println(query[i]);
+    	int [] query = this.query;
+    	try {
+    		req = request.getParameterValues("POI");
+        	query = new int[req.length];
+        	for( int i = 0; i < req.length; i++ )
+        		query[i] = Integer.parseInt(req[i]);
+        	for( int i = 0; i < query.length; i++ )
+        		System.out.println(query[i]);
+    	} catch(NullPointerException $e) {
+    		
+    	}
 		/*Previous processing*/
 		JobClient preclient = new JobClient();
 		JobConf preconf = new JobConf(com.aco.FirstServlet.class);
@@ -193,40 +199,94 @@ public class FirstServlet extends HttpServlet {
 		 * http://stackoverflow.com/questions/6154845/returning-json-response-from-servlet-to-javascript-jsp-page
 		 *
 		 * */
+		PrintWriter out = response.getWriter();
+		JobClient client = new JobClient();
+		JobConf conf = new JobConf(com.aco.FirstServlet.class);
+		//record doubleL
+		Path dl = new Path("hdfs://localhost:9000/user/hadoop/doubleL");
+		FileSystem infs = FileSystem.get(conf);
+		BufferedReader bReader = new BufferedReader(new InputStreamReader(dl.getFileSystem(conf).open(dl)));
+		String line = bReader.readLine();
+		String [][] point = new String[50][2];
+		String [] poi_info = new String[50];
+		while(line != null){
+			String[] str_pois = line.split("\t");
+			poi_info[Integer.parseInt(str_pois[0])-1] = str_pois[1];
+			String[] latNland = str_pois[2].split(",");
+			point[Integer.parseInt(str_pois[0])-1][0] = latNland[0];
+			point[Integer.parseInt(str_pois[0])-1][1] = latNland[1];
+			line = bReader.readLine();
+		}
 		
+		//-------------------json example--------------------------------------------------------------------------
+		Path aco = new Path("hdfs://localhost:9000/user/hadoop/ACO_output/part-00000");
+		bReader = new BufferedReader(new InputStreamReader(aco.getFileSystem(conf).open(aco)));
+		line = bReader.readLine();
+		int count = 0, poi_sum = 0;
+		String[][] days = new String[3][];
+		while(line != null && count < 3){
+			String[] str_pois = line.split(":");
+			days[count] = new String[str_pois.length];
+			if (str_pois.length > 1) {
+				poi_sum += str_pois.length;
+				for( int i = 0; i < str_pois.length; i++ ){
+					days[count][i] = str_pois[i];
+				}
+				count++;
+			}
+			line = bReader.readLine();
+		}
+		//mapping poi info
+		String[] schedule = new String[count];
+		for( int c = 0; c < count; c++ ){
+			if(days[c].length <= 0) {
+				break;
+			}
+			for( int i = 0; i < days[c].length; i++ ) {
+				int int_poi = Integer.parseInt(days[c][i]);
+				if (i == 0) {
+					schedule[c] = "Day" + (c+1) + ": " + poi_info[int_poi-1];
+				} else {
+					schedule[c] += " >> " + poi_info[int_poi-1] ;
+				}
+			}
+		}
+		
+		// mapping ladtitude and landtitude
+		int p = 0;
+		//FIX map_points count
+		String[][] map_points = new String[10][2];
+		for( int c = 0; c < 1; c++ ){
+			if(days[c].length > 1){
+				for( int i = 0; i < days[c].length; i++ ){
+					int int_poi = Integer.parseInt(days[c][i]);
+					map_points[p][0] = point[int_poi-1][0];
+					map_points[p][1] = point[int_poi-1][1];
+					p++;
+				}
+			}
+		}
+		System.out.println(map_points.length);
+		
+		// To Json
+		JSONObject json = new JSONObject();
+		try {
+			json.put("map_points", map_points);
+			json.put("schedule", schedule);
+			json.put("sum_pathlength", Reduce.sumPathlength);
+			json.put("sum_weight", Reduce.sumWeight);
+		} catch (JSONException jse) { 
+
+		}
 		
 		String resContent = getHTML();
-		System.out.println(resContent);
-		//-------------------json example--------------------------------------------------------------------------
-		JSONObject json      = new JSONObject();
-		JSONArray  addresses = new JSONArray();
-		JSONObject address;
-		try
-		{
-		   int count = 15;
-
-		   for (int i=0 ; i<count ; i++)
-		   {
-		       address = new JSONObject();
-		       address.put("CustomerName"     , "Decepticons" + i);
-		       address.put("AccountId"        , "1999" + i);
-		       address.put("SiteId"           , "1888" + i);
-		       address.put("Number"            , "7" + i);
-		       address.put("Building"          , "StarScream Skyscraper" + i);
-		       address.put("Street"            , "Devestator Avenue" + i);
-		       address.put("City"              , "Megatron City" + i);
-		       address.put("ZipCode"          , "ZZ00 XX1" + i);
-		       address.put("Country"           , "CyberTron" + i);
-		       addresses.put(address);
-		   }
-		   json.put("Addresses", addresses);
-		}
-		catch (JSONException jse)
-		{ 
-
-		}
-		response.setContentType("application/json");
+		//System.out.println(resContent);
+		
+		response.setContentType("text/json; charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		System.out.print(json.toString());
 		response.getWriter().write(json.toString());
+		//response.setContentType("text/json; charset=UTF-8");
 		//----------------------------------------------------------------------------------------------------------
 		
 		
