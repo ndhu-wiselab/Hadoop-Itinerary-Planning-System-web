@@ -144,287 +144,109 @@
 		<div calss="row">
 			<div class="col-md-6">
 				<form id="trigger_hadoop" name="trigger_hadoop" method="POST" action="./aco ">
-					<div class="form-group">
-    					<label for="">Select how many days you want to travel?</label>
-							<select name="Kday" class="form-control col-md-6">
-								<option value="1">玩一天</option>
-								<option value="2">玩二天</option>
-								<option value="3">玩三天</option>
-							</select>
-					</div>
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="1"/> 清水斷崖
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="3"/> 太魯閣遊客中心
-							</label>
-						</div>	
-					</div>		
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="5"/> 長春祠
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="6"/> 布落灣遊憩區
-							</label>
-						</div>	
-					</div>
-					<div class="form-group">	
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="7"/> 燕子口
-							</label>
-						</div>	
-					</div>
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="9"/> 九曲洞
-							</label>
-						</div>	
-					</div>
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="10"/> 綠水合流
-							</label>
-						</div>
-					</div>		
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>	
-								<input type="checkbox" name="POI"  value="11"/> 白楊步道
-							</label>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>	
-								<input type="checkbox" name="POI"  value="12"/> 天祥風景區
-							</label>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="13"/> 梅園竹村步道
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="14"/> 西寶國小
-							</label>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="15"/> 新白楊服務站
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="17"/> 關原雲海
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="18"/> 大禹嶺
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="20"/> 新城天主堂
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="21"/> 七星潭風景區
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="22"/> 七星潭柴魚博物館
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="23"/> 向日廣場
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="24"/> 七星潭自行車道
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="25"/> 花蓮觀光酒廠
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="26"/> 慈濟靜思精舍
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="27"/> 松園別館
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="28"/> 美崙山公園
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="29"/> 北濱公園
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="30"/> 石藝大街
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="31"/> 花蓮創意文化園區
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="32"/> 鐵道文化商圈
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="33"/> 花蓮縣石雕博物館
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="34"/> 舊鐵道文化商圈
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="35"/> 慈濟文化園區
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="36"/> 紅葉溫泉
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="37"/> 連城連花園
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="38"/> 吉安慶休院
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="39"/> 知卡宣森林公園
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="40"/> 初英親水生態公園
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="41"/> 楓林步道
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="42"/> 佐倉步道
-							</label>
-						</div>
-					</div>	
-					<div class="form-group">
-						<div class="checkbox col-md-3">
-			  				<label>
-								<input type="checkbox" name="POI"  value="43"/> 鳳林客家文物館
-							</label>
-						</div>
-					</div>	
+
+				<div class="panel panel-primary"> 
+				<div class="panel-heading"> 
+				<h3 class="panel-title">Step 1. 選擇旅遊天數</h3> 
+				</div> 
+				<div class="panel-body">
+				<div class="form-group">
+				<label for="">Select how many days you want to travel?</label>
+				<select name="Kday" class="form-control col-md-6">
+					<option value="1">玩一天</option>
+					<option value="2">玩二天</option>
+					<option value="3">玩三天</option>
+				</select>
+				</div>
+				</div> 
+				</div>
+<!-- ========================================================================== --> 
+			<div class="panel panel-primary"> 
+				<div class="panel-heading"> 
+				<h3 class="panel-title">Step 2. 選擇這趟旅程一定要去的景點</h3> 
+				</div> 
+				<div class="panel-body">
+					<table class="table table-condensed">
+					  <tr>
+					  <td class="active"><label><input type="checkbox" name="POI"  value="1"/> 清水斷崖</label></td>
+					  <td class="success"><label><input type="checkbox" name="POI"  value="3"/> 太魯閣遊客中心</label></td>
+					  <td class="warning"><label><input type="checkbox" name="POI"  value="5"/> 長春祠</label></td>
+					  <td class="danger"><label><input type="checkbox" name="POI"  value="6"/> 布落灣遊憩區</label></td>
+					</tr>
+					<tr>
+					  <td class="active"><label><input type="checkbox" name="POI"  value="7"/> 燕子口</label></td>
+					  <td class="success"><label><input type="checkbox" name="POI"  value="9"/> 九曲洞</label></td>
+					  <td class="warning"><label><input type="checkbox" name="POI"  value="10"/> 綠水合流</label></td>
+					  <td class="danger"><label><input type="checkbox" name="POI"  value="11"/> 白楊步道</label></td>
+					</tr>
+					<tr>
+					  <td class="active"><label><input type="checkbox" name="POI"  value="12"/> 天祥風景區</label></td>
+					  <td class="success"><label><input type="checkbox" name="POI"  value="13"/> 梅園竹村步道</label></td>
+					  <td class="warning"><label><input type="checkbox" name="POI"  value="14"/> 西寶國小</label></td>
+					  <td class="danger"><label><input type="checkbox" name="POI"  value="15"/> 新白楊服務站</label></td>
+					</tr>
+					<tr>
+					  <td class="active"><label><input type="checkbox" name="POI"  value="17"/> 關原雲海</label></td>
+					  <td class="success"><label><input type="checkbox" name="POI"  value="18"/>大禹嶺</label></td>
+					  <td class="warning"><label><input type="checkbox" name="POI"  value="20"/> 新城天主堂</label></td>
+					  <td class="danger"><label><input type="checkbox" name="POI"  value="21"/> 七星潭風景區</label></td>
+					</tr>
+					<tr>
+					  <td class="active"><label><input type="checkbox" name="POI"  value="22"/> 七星潭柴魚博物館</label></td>
+					  <td class="success"><label><input type="checkbox" name="POI"  value="23"/> 向日廣場</label></td>
+					  <td class="warning"><label><input type="checkbox" name="POI"  value="24"/> 七星潭自行車道</label></td>
+					  <td class="danger"><label><input type="checkbox" name="POI"  value="25"/> 花蓮觀光酒廠</label></td>
+					</tr>
+					<tr>
+					  <td class="active"><label><input type="checkbox" name="POI"  value="26"/> 慈濟靜思精舍</label></td>
+					  <td class="success"><label><input type="checkbox" name="POI"  value="27"/> 松園別館</label></td>
+					  <td class="warning"><label><input type="checkbox" name="POI"  value="28"/> 美崙山公園</label></td>
+					  <td class="danger"><label><input type="checkbox" name="POI"  value="29"/> 北濱公園</label></td>
+					</tr>
+					<tr>
+					  <td class="active"><label><input type="checkbox" name="POI"  value="30"/> 石藝大街</label></td>
+					  <td class="success"><label><input type="checkbox" name="POI"  value="31"/> 花蓮創意文化園區</label></td>
+					  <td class="warning"><label><input type="checkbox" name="POI"  value="32"/> 鐵道文化商圈</label></td>
+					  <td class="danger"><label><input type="checkbox" name="POI"  value="33"/> 花蓮縣石雕博物館</label></td>
+					</tr>
+					<tr>
+					  <td class="active"><label><input type="checkbox" name="POI"  value="34"/> 舊鐵道文化商圈</label></td>
+					  <td class="success"><label><input type="checkbox" name="POI"  value="35"/> 慈濟文化園區</label></td>
+					  <td class="warning"><label><input type="checkbox" name="POI"  value="36"/> 紅葉溫泉</label></td>
+					  <td class="danger"><label><input type="checkbox" name="POI"  value="37"/> 連城連花園</label></td>
+					</tr>
+					<tr>
+					  <td class="active"><label><input type="checkbox" name="POI"  value="38"/> 吉安慶休院</label></td>
+					  <td class="success"><label><input type="checkbox" name="POI"  value="39"/> 知卡宣森林公園</label></td>
+					  <td class="warning"><label><input type="checkbox" name="POI"  value="40"/> 初英親水生態公園</label></td>
+					  <td class="danger"><label><input type="checkbox" name="POI"  value="41"/> 楓林步道</label></td>
+					</tr>
+					<tr>
+					  <td class="active"><label><input type="checkbox" name="POI"  value="42"/> 佐倉步道</label></td>
+					  <td class="success"><label><input type="checkbox" name="POI"  value="43"/> 鳳林客家文物館</label></td>
+					  <td class="warning"></td>
+					  <td class="danger"></td>
+					</tr>
+					
+					</table>
+					
 					<div class="form-group">
 						<div class="checkbox col-md-12">
 			  				<label>	
-								<input id="trigerJobBtn" type="submit" name="submit" value="Trigger Job" class="btn btn-primary"/>
+								<input id="trigerJobBtn" type="submit" name="submit" value="開始規劃行程！" class="btn btn-primary"/>
 							</label>
 						</div>
-					</div>	
+					</div>
+
+				</div> 
+			</div>
+<!-- ========================================================================== --> 
+
+
+
+					
+					
+						
 				</form>
 			</div>
 			
