@@ -1,4 +1,4 @@
-
+<%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html">
 <!-- The HTML 4.01 Transitional DOCTYPE declaration-->
 <!-- above set at the top of the file will set     -->
@@ -7,11 +7,8 @@
 <!-- with a "Standards Mode" doctype is supported, -->
 <!-- but may lead to some differences in layout.   -->
 
-<%@ page contentType="text/html; charset=UTF-8"%>
 <html>
 	<head>
-	 <meta charset="UTF-8" />
-		<meta http-equiv="content-type" content="text/json; charset=UTF-8">
 		<title>Hello App Engine</title>
 		<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
 		<script src="https://malsup.github.io/jquery.form.js"></script>
@@ -48,7 +45,7 @@
 			var spinner = new Spinner(opts);
 			
 			var scheduleDiv = $('#schedule');
-			
+			/*
 			function processJson(data) { 
 			    console.log(data);
 			    showMap(data.map_points);
@@ -56,14 +53,38 @@
 			    spinner.stop();
 			    $("#trigger_hadoop :input").prop("checked", false);
 			}
+			*/
 			
 			$("#trigerJobBtn").click(function() {
 				spinner.spin(target);
 				
-				$('#trigger_hadoop').ajaxForm({ 
+				/*
+				 $('#trigger_hadoop').ajaxForm({ 
 			        dataType:  'json', 
 			        success:   processJson 
-			    }); 
+			    });*/  
+				
+				 $("#trigger_hadoop").unbind('submit').submit(function(e) {
+
+				    var url = "./aco"; 
+
+				    $.ajax({
+				           type: "POST",
+				           url: url,
+				           data: $("#trigger_hadoop").serialize(), 
+				           success:function(data) {
+				        	   var parsedData = JSON.parse(data);
+				        	   console.log(parsedData);
+							    showMap(parsedData.map_points);
+							    setResultText(parsedData);
+							    spinner.stop();
+							    $("#trigger_hadoop :input").prop("checked", false);
+				           }
+				         });
+				    e.preventDefault(); 
+				}); 
+				
+				
 			});
 			
 			//set schedule, path_length and weight
@@ -143,7 +164,7 @@
 		<div calss="row" style="height: 20px"></div>
 		<div calss="row">
 			<div class="col-md-6">
-				<form id="trigger_hadoop" name="trigger_hadoop" method="POST" action="./aco ">
+				<form id="trigger_hadoop" name="trigger_hadoop" method="POST" action="./aco"S>
 
 				<div class="panel panel-primary"> 
 				<div class="panel-heading"> 
