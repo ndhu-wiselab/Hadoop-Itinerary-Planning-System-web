@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<!DOCTYPE html">
+<!DOCTYPE html>
 <!-- The HTML 4.01 Transitional DOCTYPE declaration-->
 <!-- above set at the top of the file will set     -->
 <!-- the browser's rendering engine into           -->
@@ -9,7 +9,7 @@
 
 <html>
 	<head>
-		<title>Hello App Engine</title>
+		<title>多天旅遊行程規劃系統</title>
 		<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
 		<script src="https://malsup.github.io/jquery.form.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
@@ -161,8 +161,26 @@
 	</head>
 	
 	<body onload="initialize();">
-		<div calss="row" style="height: 20px"></div>
+	<!-- 
+	    <div class="row">
+	      <div class="col-md-12" style="padding-left:35px">
+	      	<h1>
+	      	<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> 多天旅遊行程規劃系統</h1>
+	      	<div class="lead" >Enjoy your trip!</div>
+	      </div>
+	      <div class="col-md-6"></div>
+	
+	    </div>
+	    -->
+	    
+	    
+		<!-- <div calss="row" style="height: 20px"></div> -->
 		<div calss="row">
+			 <div class="col-md-12" style="padding-left:35px">
+		      	<h1>
+		      	<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> 多天旅遊行程規劃系統</h1>
+		      	<div class="lead" >Enjoy your trip!</div>
+		      </div>
 			<div class="col-md-6">
 				<form id="trigger_hadoop" name="trigger_hadoop" method="POST" action="./aco"S>
 
@@ -261,33 +279,52 @@
 
 				</div> 
 			</div>
-<!-- ========================================================================== --> 
-
-
-
-					
-					
+<!-- ========================================================================== --> 	
 						
 				</form>
 			</div>
 			
+			  
+			<div class="col-md-6" style="padding-left: 0px;">
 			
-			<div class="col-md-6">
-				<div class="row" style="padding: 10px">
-					<div id="map-canvas" style="width:500px;height:380px;"></div>
-				</div>
-				<div class="row" style="padding: 10px">
-					<div id="schedule"></div>
-					<div class="form-group">
-					    <label for="path_length">Path Length: </label>
-					    <span id="path_length"></span>
-					</div>
-					<div class="form-group">
-					    <label for="weight">Weighth: </label>
-					    <span id="weight"></span>
-					</div>
-				</div>
+			
+			
+			 <div class="panel panel-success">
+			      <div class="panel-heading">
+			      	<h3 class="panel-title">執行結果</h3> 
+			      </div>
+			      <div class="panel-body">
+			      		<div class="row" style="padding: 10px">
+						<div id="map-canvas" style="width:500px;height:380px;"></div>
+						</div>
+						<div class="row" style="padding: 10px">
+							<div id="schedule"></div>
+							<div class="form-group">
+							    <label for="path_length">Path Length: </label>
+							    <span id="path_length"></span>
+							</div>
+							<div class="form-group">
+							    <label for="weight">Weighth: </label>
+							    <span id="weight"></span>
+							</div>
+						</div>
+			      </div>
+		    </div>
+			
+			
+			
+				
 			</div>
+			
 		</div>
+		
+		<div class="footer navbar-fixed-bottom" style="background-color:#F5F5F5;height:60px">
+	      <div class="container text-center" style="padding-top:5px" >
+	        <p class="text-muted">2016, NDHU WISE lab</p>
+	        <p class="text-muted">c319,Science and Engineering Building II, 1, Sec. 2, Da Hsueh Rd., Shou-Feng, Hualien, Taiwan, 974, Republic of China</p>
+	      </div>
+	    </div>
+	    
+	    
 	</body>
 </html>
