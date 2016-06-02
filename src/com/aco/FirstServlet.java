@@ -3,10 +3,12 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Enumeration;
 
 import javax.servlet.ServletException;
@@ -199,7 +201,7 @@ public class FirstServlet extends HttpServlet {
 		 * http://stackoverflow.com/questions/6154845/returning-json-response-from-servlet-to-javascript-jsp-page
 		 *
 		 * */
-		PrintWriter out = response.getWriter();
+		//PrintWriter out = response.getWriter();
 		JobClient client = new JobClient();
 		JobConf conf = new JobConf(com.aco.FirstServlet.class);
 		//record doubleL
@@ -279,80 +281,15 @@ public class FirstServlet extends HttpServlet {
 
 		}
 		
-		String resContent = getHTML();
-		//System.out.println(resContent);
+		System.out.println(json.toString());
 		
-		response.setContentType("text/json; charset=UTF-8");
-		response.setCharacterEncoding("UTF-8");
-		System.out.print(json.toString());
-		response.getWriter().write(json.toString());
-		//response.setContentType("text/json; charset=UTF-8");
-		//----------------------------------------------------------------------------------------------------------
-		
-		
-		
-//		response.sendRedirect("index.jsp?" + resContent);
-//		request.setAttribute("name", resContent);
-//		request.getRequestDispatcher("index.jsp").forward(request, response);
-		
-		
-//		System.out.println("------------getHTML()");
-//		System.out.println(resContent);
-//		response.setContentType("text/html");
-//	    PrintWriter show = response.getWriter();
-//	    show.println(resContent);
-	    //-----------------------------
-//	    show.println("<html>");
-//	    show.println("<head>");
-//		//out.println("<title>sample</title>");
-//	    show.println("</head>");
-//	    show.println("<body>");
-//	    show.println("</body>");
-//	    show.println("<h1>Hello test</h1>");
-//	    show.print(str);
-//		request.getRequestDispatcher("index.jsp").include(request, response);
-//		show.println("</html>");
-//		show.close();
-//		System.out.println("Done");
-//	    
-	    //--------------------------------------------------
-		
-    	/*
-    	JobClient client = new JobClient();
-    	JobConf conf = new JobConf(FirstServlet.class);
-    	// TODO: specify output types
-    	conf.setOutputKeyClass(Text.class);
-    	conf.setOutputValueClass(Text.class);
-    	conf.setOutputKeyComparatorClass(IntWritableDecreasingComparator.class);
-    	
-		// TODO: specify input and output DIRECTORIES (not files)
-    	conf.setInputFormat(TextInputFormat.class);
-    	conf.setOutputFormat(TextOutputFormat.class);
-    	
-    	FileInputFormat.setInputPaths(conf, new  
-        Path("hdfs://localhost:9000/user/hadoop/10round-10/part-00000")); 
-    	FileOutputFormat.setOutputPath(conf, new 
-        Path("hdfs://localhost:9000/user/hadoop/ACO_output")); 
+		 OutputStream out = response.getOutputStream();   
+		 out.write(json.toString().getBytes("UTF-8"));   
 
-        // TODO: specify a mapper and reducer
-     	conf.setMapperClass(Map.class);
-     	conf.setReducerClass(Reduce.class);
-        
-     	client.setConf(conf);
-        try {
-        	JobClient.runJob(conf);
-        	//get file (run job done)
-        	response.setContentType("text/html");
-            PrintWriter out = response.getWriter();
+		
+//		response.getWriter().write(json.toString());
+		
 
-            out.println("<HTML>");
-            out.println("<HEAD><TITLE>Hello World</TITLE></HEAD>");
-            out.println("<BODY>");
-            out.println("<BIG>Hello World</BIG>");
-            out.println("</BODY></HTML>");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
+	
    }
 }
