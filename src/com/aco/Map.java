@@ -168,7 +168,7 @@ public class Map extends MapReduceBase implements Mapper<LongWritable, Text, Tex
 		selectP = Double.valueOf(nf.format(rand.nextDouble()));
 		
 		//determine select or not
-		if( dul < 5 ){
+		if( dul < 2 ){
 			String out = P+"\t"+iterID+"\t"+iter+"\t"+iter_weight+"\t"+iter_pathlength;
 			output.collect(new Text("Done"), new Text(out));
 		}

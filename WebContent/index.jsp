@@ -6,7 +6,6 @@
 <!-- "Quirks Mode". Replacing this declaration     -->
 <!-- with a "Standards Mode" doctype is supported, -->
 <!-- but may lead to some differences in layout.   -->
-
 <html>
 	<head>
 		<title>多天旅遊行程規劃系統</title>
@@ -14,6 +13,7 @@
 		<script src="https://malsup.github.io/jquery.form.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 		<script src="http://spin.js.org/spin.min.js"></script>
+		<script src="./js/async.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 		<script>
@@ -39,128 +39,132 @@
 					, shadow: false // Whether to render a shadow
 					, hwaccel: false // Whether to use hardware acceleration
 					, position: 'absolute' // Element positioning
-					}
+			}
 			var map;
 			var target = document.getElementById('trigger_hadoop')
 			var spinner = new Spinner(opts);
 			
 			var scheduleDiv = $('#schedule');
-			/*
-			function processJson(data) { 
-			    console.log(data);
-			    showMap(data.map_points);
-			    setResultText(data);
-			    spinner.stop();
-			    $("#trigger_hadoop :input").prop("checked", false);
-			}
-			*/
 			
 			$("#trigerJobBtn").click(function() {
 				spinner.spin(target);
-				
-				/*
-				 $('#trigger_hadoop').ajaxForm({ 
-			        dataType:  'json', 
-			        success:   processJson 
-			    });*/  
-				
-				 $("#trigger_hadoop").unbind('submit').submit(function(e) {
-
+				$("#trigger_hadoop").unbind('submit').submit(function(e) {
 				    var url = "./aco"; 
-
 				    $.ajax({
-				           type: "POST",
-				           url: url,
-				           data: $("#trigger_hadoop").serialize(), 
-				           success:function(data) {
-				        	   var parsedData = JSON.parse(data);
-				        	   console.log(parsedData);
-							    showMap(parsedData.map_points);
-							    setResultText(parsedData);
-							    spinner.stop();
-							    $("#trigger_hadoop :input").prop("checked", false);
-				           }
-				         });
+			           type: "POST",
+			           url: url,
+			           data: $("#trigger_hadoop").serialize(), 
+			           success:function(data) {
+			        	   var parsedData = JSON.parse(data);
+			        	   console.log(parsedData);
+			        	   //initialize(parsedData.map_points);
+			        	   setResultText(parsedData);
+			        	   spinner.stop();
+			        	   $("#trigger_hadoop :input").prop("checked", false);
+			           }
+					});
 				    e.preventDefault(); 
-				}); 
-				
-				
+				});
 			});
 			
 			//set schedule, path_length and weight
 			function setResultText(data) {
-				console.log(data.sum_weight);
-				console.log(data.sum_pathlength);
+				//console.log(data.sum_weight);
+				//console.log(data.sum_pathlength);
 				$('#weight').text(data.sum_weight);
 				$('#path_length').text(data.sum_pathlength);
 				$('#schedule').children().remove();
 				data.schedule.forEach(function(perDay, index) {
 					$('#schedule').append("<p>" + perDay + "</p>");
 				});
-				
 			}
 			
 			//initial
-		    function initialize() {
+		    function initialize(map_points) {
 		    	var rendererOptions = {
-	                    suppressMarkers: true
+		    			suppressMarkers: true
 	            };
-		    	directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
 		    	var startPoint = new google.maps.LatLng(24.162084,121.287389);
 		    	map = new google.maps.Map(document.getElementById('map-canvas'), {
 		    		zoom: 8,
 		    		mapTypeId: google.maps.MapTypeId.ROADMAP,
 		    		center: startPoint
 		    	});
-		    	directionsDisplay.setMap(map);
+		    	var color = ['#000000', '#ff0000', '#0000ff'];
+		    	//var directionsService = new google.maps.DirectionsService();
+		    	
+		    	
+		    	async.forEachOf(map_points, function(value, key, callback){
+		    		var i = key;
+		    		console.log("foreach iterator: "+i);
+		    	    // if any of the saves produced an error, err would equal that error
+		    		 // Perform operation on file here.
+		    		console.log("map_points.length: " + map_points.length)
+		    		var arrPoint = [];
+		            for (var p = 0; p < map_points[i].length; p++) {
+		            	console.log("p:"+ p);
+		            	arrPoint.push(new google.maps.LatLng(map_points[i][p][0], map_points[i][p][1]));
+		            }
+		            //set route request
+		            var waypts = [];
+		            for (var j = 1; j < arrPoint.length-1; j++) {
+		            	console.log("j" + j);
+		                    waypts.push({
+		                            location: arrPoint[j],
+		                            stopover: true
+		                    });
+		            }
+		            var start = arrPoint[0];
+		            var end = arrPoint[arrPoint.length-1];
+		            var request = {
+		                    origin: start,
+		                    destination: end,
+		                    waypoints: waypts,
+		                    optimizeWaypoints: true,
+		                    travelMode: google.maps.DirectionsTravelMode.DRIVING
+		            };
+		            // route callback
+		            var directionsService = new google.maps.DirectionsService();
+		            directionsService.route(request, function(response, status) {
+		            	console.log('hello');
+	                    //rout callback and the result
+	                    if (status == google.maps.DirectionsStatus.OK) {
+	                    	console.log('status == google.maps.DirectionsStatus.OK');
+	                    	var poly = new google.maps.Polyline({
+					    	    strokeColor: color[i],
+					    	    strokeOpacity: 1.0,
+					    	    strokeWeight: 3
+					    	});
+	                    	var bounds = new google.maps.LatLngBounds();
+	                    	var path = response.routes[0].overview_path;
+	                    	console.log(path);
+	                        $(path).each(function(index, item) {
+	                        	//console.log(index);
+	                          poly.getPath().push(item);
+	                        });
+	                        
+					    	poly.setMap(map);
+					    	callback();
+	                    }else{
+	                    	callback();
+	                    }
+	                    
+		            });
+
+		    		  
+		    	});
+		    	
+		    	/* for(var i = 0; i < map_points.length; i++) {
+		    		
+		    	} */
 			}
-		    
-			function showMap(map_points) {
-				var latlng = map_points;
-			    var directionsService = new google.maps.DirectionsService();
-			    var start = new google.maps.LatLng(latlng[0][0],latlng[0][1]);
-			    var end = new google.maps.LatLng(latlng[latlng.length-1][0],latlng[latlng.length-1][1]);
-			    calcRoute();
-			  
-			    //routing
-			    function calcRoute() {
-			            var arrPoint = [];
-			            for (var i = 0; i < latlng.length; i++) {
-			            	arrPoint.push(new google.maps.LatLng(latlng[i][0],latlng[i][1]));
-			            }
-			            //thought the location
-			            var waypts = [];
-			            for (var i = 1; i < arrPoint.length-1; i++) {
-			                    waypts.push({
-			                            location: arrPoint[i],
-			                            stopover: true
-			                    });
-			            }
-			            //rout request
-			            var request = {
-			                    origin: start,
-			                    destination: end,
-			                    waypoints: waypts,
-			                    optimizeWaypoints: true,
-			                    travelMode: google.maps.DirectionsTravelMode.DRIVING
-			            };
-			            // route callback
-			            directionsService.route(request, function(response, status) {
-			                    //rout callback and the result
-			                    if (status == google.maps.DirectionsStatus.OK) {
-			                            directionsDisplay.setDirections(response);
-			                    }
-			            });
-			    }
-			}
-			// map event
-			google.maps.event.addDomListener(window, 'load', initialize);
+			//google.maps.event.addDomListener(window, 'load', initialize);
 		});
     	</script>
 		
 	</head>
 	
-	<body onload="initialize();">
+	<body onload="">
 	<!-- 
 	    <div class="row">
 	      <div class="col-md-12" style="padding-left:35px">

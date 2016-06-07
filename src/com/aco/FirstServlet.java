@@ -225,8 +225,8 @@ public class FirstServlet extends HttpServlet {
 		bReader = new BufferedReader(new InputStreamReader(aco.getFileSystem(conf).open(aco)));
 		line = bReader.readLine();
 		int count = 0, poi_sum = 0;
-		String[][] days = new String[3][];
-		while(line != null && count < 3){
+		String[][] days = new String[Kday][];
+		while(line != null && count < Kday){
 			String[] str_pois = line.split(":");
 			days[count] = new String[str_pois.length];
 			if (str_pois.length > 1) {
@@ -239,8 +239,8 @@ public class FirstServlet extends HttpServlet {
 			line = bReader.readLine();
 		}
 		//mapping poi info
-		String[] schedule = new String[count];
-		for( int c = 0; c < count; c++ ){
+		String[] schedule = new String[Kday];
+		for( int c = 0; c < Kday; c++ ){
 			if(days[c].length <= 0) {
 				break;
 			}
@@ -255,20 +255,16 @@ public class FirstServlet extends HttpServlet {
 		}
 		
 		// mapping ladtitude and landtitude
-		int p = 0;
-		//FIX map_points count
-		String[][] map_points = new String[10][2];
-		for( int c = 0; c < 1; c++ ){
-			if(days[c].length > 1){
-				for( int i = 0; i < days[c].length; i++ ){
-					int int_poi = Integer.parseInt(days[c][i]);
-					map_points[p][0] = point[int_poi-1][0];
-					map_points[p][1] = point[int_poi-1][1];
-					p++;
-				}
+		JSONArray map_points = new JSONArray();
+		for( int d = 0; d < Kday; d++ ){
+			String[][] day_points = new String[days[d].length][2];
+			for( int p = 0; p < days[d].length; p++ ){
+				int int_poi = Integer.parseInt(days[d][p]);
+				day_points[p][0] = point[int_poi-1][0];
+				day_points[p][1] = point[int_poi-1][1];
 			}
+			map_points.put(day_points);
 		}
-		System.out.println(map_points.length);
 		
 		// To Json
 		JSONObject json = new JSONObject();
@@ -284,12 +280,6 @@ public class FirstServlet extends HttpServlet {
 		System.out.println(json.toString());
 		
 		 OutputStream out = response.getOutputStream();   
-		 out.write(json.toString().getBytes("UTF-8"));   
-
-		
-//		response.getWriter().write(json.toString());
-		
-
-	
+		 out.write(json.toString().getBytes("UTF-8"));
    }
 }
