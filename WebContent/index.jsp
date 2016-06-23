@@ -1,4 +1,3 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <!-- The HTML 4.01 Transitional DOCTYPE declaration-->
 <!-- above set at the top of the file will set     -->
@@ -6,14 +5,15 @@
 <!-- "Quirks Mode". Replacing this declaration     -->
 <!-- with a "Standards Mode" doctype is supported, -->
 <!-- but may lead to some differences in layout.   -->
+<%@ page contentType="text/html;charset=UTF-8" %> 
 <html>
 	<head>
 		<title>多天旅遊行程規劃系統</title>
 		<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
-		<script src="https://malsup.github.io/jquery.form.js"></script>
+		 <script src="https://malsup.github.io/jquery.form.js"></script> 
 		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 		<script src="http://spin.js.org/spin.min.js"></script>
-		<script src="./js/async.js"></script>
+		<!--  <script src="./js/async.js"></script> -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 		<script>
@@ -39,22 +39,25 @@
 					, shadow: false // Whether to render a shadow
 					, hwaccel: false // Whether to use hardware acceleration
 					, position: 'absolute' // Element positioning
-			}
+			};
+			
 			var map;
 			var target = document.getElementById('trigger_hadoop')
 			var spinner = new Spinner(opts);
-			
 			var scheduleDiv = $('#schedule');
+			
 			
 			$("#trigerJobBtn").click(function() {
 				spinner.spin(target);
-				$("#trigger_hadoop").unbind('submit').submit(function(e) {
+			 	$("#trigger_hadoop").unbind('submit').submit(function(e) {
 				    var url = "./aco"; 
 				    $.ajax({
 			           type: "POST",
 			           url: url,
 			           data: $("#trigger_hadoop").serialize(), 
 			           success:function(data) {
+			        	   console.log("success");
+			        
 			        	   var parsedData = JSON.parse(data);
 			        	   console.log(parsedData);
 			        	   //initialize(parsedData.map_points);
@@ -64,8 +67,9 @@
 			           }
 					});
 				    e.preventDefault(); 
-				});
+				}); 
 			});
+			
 			
 			//set schedule, path_length and weight
 			function setResultText(data) {
@@ -75,12 +79,15 @@
 				$('#path_length').text(data.sum_pathlength);
 				$('#schedule').children().remove();
 				data.schedule.forEach(function(perDay, index) {
-					$('#schedule').append("<p>" + perDay + "</p>");
+					$('#schedule').append("<p><span class='label label-warning'>map</span> " + perDay + "</p>");
 				});
 			}
 			
+			//點選第一天，第二天或第三天，地圖會重新畫該天的行程路線，另外要把一二三天的map_points存進localstorage裡面，然後
+			//需要某天的路線時就帶該天的map_point進去即可。
 			//initial
 		    function initialize(map_points) {
+				console.log('djsdfkjskfj');
 		    	var rendererOptions = {
 		    			suppressMarkers: true
 	            };
@@ -94,7 +101,7 @@
 		    	//var directionsService = new google.maps.DirectionsService();
 		    	
 		    	
-		    	async.forEachOf(map_points, function(value, key, callback){
+		    	/* async.forEachOf(map_points, function(value, key, callback){
 		    		var i = key;
 		    		console.log("foreach iterator: "+i);
 		    	    // if any of the saves produced an error, err would equal that error
@@ -114,8 +121,11 @@
 		                            stopover: true
 		                    });
 		            }
+		            
 		            var start = arrPoint[0];
 		            var end = arrPoint[arrPoint.length-1];
+		            console.log(start);
+		            console.log(waypts);
 		            var request = {
 		                    origin: start,
 		                    destination: end,
@@ -126,8 +136,10 @@
 		            // route callback
 		            var directionsService = new google.maps.DirectionsService();
 		            directionsService.route(request, function(response, status) {
+		            	console.log(response.geocoded_waypoints);
 		            	console.log('hello');
 	                    //rout callback and the result
+	                    console.log(status);
 	                    if (status == google.maps.DirectionsStatus.OK) {
 	                    	console.log('status == google.maps.DirectionsStatus.OK');
 	                    	var poly = new google.maps.Polyline({
@@ -137,11 +149,59 @@
 					    	});
 	                    	var bounds = new google.maps.LatLngBounds();
 	                    	var path = response.routes[0].overview_path;
+	                    	
+	                    	
+	                    	
 	                    	console.log(path);
+	                    	
+	                    	var order = response.routes[0].waypoint_order;
+	                    	console.log(order);
+	                    	
+	                    	var leg = response.routes[0].legs;
+	                    	console.log(leg);
 	                        $(path).each(function(index, item) {
+	                        	
+	                        	
+	                        	
 	                        	//console.log(index);
 	                          poly.getPath().push(item);
+	                        
 	                        });
+	                        var pinColor = "f0f700";
+	                        var pinColorEnd= "0910f2";
+	                        var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
+	                            new google.maps.Size(21, 34),
+	                            new google.maps.Point(0,0),
+	                            new google.maps.Point(10, 34));
+	                        
+	                        var pinImageEnd = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColorEnd,
+		                            new google.maps.Size(21, 34),
+		                            new google.maps.Point(0,0),
+		                            new google.maps.Point(10, 34));
+	                       
+	                        var marker = new google.maps.Marker({
+		                          position: start,
+		                         title:"Start",
+		                         icon: pinImage,
+		                          map: map
+		                        });
+	                        var markerEnd = new google.maps.Marker({
+		                          position: end,
+		                          title: "End",
+		                         icon: pinImageEnd,
+		                          map: map
+		                        });
+	                        
+	                     
+	                        // Add a new marker at the new plotted point on the polyline.
+	                           $(waypts).each(function(index, item) {
+	                        		
+	   	                        	 var marker = new google.maps.Marker({
+	   			                          position: item.location,
+	   			                          map: map
+	   			                        }); 
+	   	                        	});
+
 	                        
 					    	poly.setMap(map);
 					    	callback();
@@ -152,7 +212,7 @@
 		            });
 
 		    		  
-		    	});
+		    	}); */
 		    	
 		    	/* for(var i = 0; i < map_points.length; i++) {
 		    		
@@ -164,7 +224,7 @@
 		
 	</head>
 	
-	<body onload="">
+	<body>
 	<!-- 
 	    <div class="row">
 	      <div class="col-md-12" style="padding-left:35px">
@@ -186,7 +246,7 @@
 		      	<div class="lead" >Enjoy your trip!</div>
 		      </div>
 			<div class="col-md-6">
-				<form id="trigger_hadoop" name="trigger_hadoop" method="POST" action="./aco"S>
+				<form id="trigger_hadoop" name="trigger_hadoop" method="POST" action="./aco">
 
 				<div class="panel panel-primary"> 
 				<div class="panel-heading"> 
@@ -206,7 +266,7 @@
 <!-- ========================================================================== --> 
 			<div class="panel panel-primary"> 
 				<div class="panel-heading"> 
-				<h3 class="panel-title">Step 2. 選擇這趟旅程一定要去的景點</h3> 
+				<h3 class="panel-title">Step 2. 選擇希望經過的景點</h3> 
 				</div> 
 				<div class="panel-body">
 					<table class="table table-condensed">
@@ -301,16 +361,19 @@
 			      		<div class="row" style="padding: 10px">
 						<div id="map-canvas" style="width:500px;height:380px;"></div>
 						</div>
+						
+						
 						<div class="row" style="padding: 10px">
 							<div id="schedule"></div>
-							<div class="form-group">
+							
+							<!-- <div class="form-group">
 							    <label for="path_length">Path Length: </label>
 							    <span id="path_length"></span>
 							</div>
 							<div class="form-group">
 							    <label for="weight">Weighth: </label>
 							    <span id="weight"></span>
-							</div>
+							</div> -->
 						</div>
 			      </div>
 		    </div>

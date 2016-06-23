@@ -64,6 +64,8 @@ public class FirstServlet extends HttpServlet {
 		}
 	}
 	
+
+	
     @SuppressWarnings("deprecation")
 	protected void doPost(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
     	//request.setCharacterEncoding("UTF-8");
@@ -278,8 +280,25 @@ public class FirstServlet extends HttpServlet {
 		}
 		
 		System.out.println(json.toString());
+		//---test
+		JSONObject json_test = new JSONObject();
+		try {
+			json_test.put("hi","hello");	
+		}catch (JSONException jse) {
+			
+		}
 		
+		
+		//--- test end
+		 response.setContentType("text/plain; charset=UTF-8");
+			response.setCharacterEncoding("UTF-8");
 		 OutputStream out = response.getOutputStream();   
 		 out.write(json.toString().getBytes("UTF-8"));
+		 
+		 
+//		 response.setContentType("text/json; charset=UTF-8");
+//			response.setCharacterEncoding("UTF-8");
+////			System.out.print(json.toString());
+//			response.getWriter().write(json.toString());
    }
 }
