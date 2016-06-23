@@ -13,7 +13,7 @@
 		 <script src="https://malsup.github.io/jquery.form.js"></script> 
 		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 		<script src="http://spin.js.org/spin.min.js"></script>
-		<!--  <script src="./js/async.js"></script> -->
+		  <script src="./js/async.js"></script> 
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 		<script>
@@ -60,7 +60,7 @@
 			        
 			        	   var parsedData = JSON.parse(data);
 			        	   console.log(parsedData);
-			        	   //initialize(parsedData.map_points);
+			        	   initialize(parsedData.map_points);
 			        	   setResultText(parsedData);
 			        	   spinner.stop();
 			        	   $("#trigger_hadoop :input").prop("checked", false);
@@ -87,7 +87,7 @@
 			//需要某天的路線時就帶該天的map_point進去即可。
 			//initial
 		    function initialize(map_points) {
-				console.log('djsdfkjskfj');
+				console.log('initialize----------');
 		    	var rendererOptions = {
 		    			suppressMarkers: true
 	            };
@@ -100,22 +100,23 @@
 		    	var color = ['#000000', '#ff0000', '#0000ff'];
 		    	//var directionsService = new google.maps.DirectionsService();
 		    	
-		    	
-		    	/* async.forEachOf(map_points, function(value, key, callback){
-		    		var i = key;
-		    		console.log("foreach iterator: "+i);
-		    	    // if any of the saves produced an error, err would equal that error
-		    		 // Perform operation on file here.
-		    		console.log("map_points.length: " + map_points.length)
+		    	console.log(map_points);
+		    	 async.eachSeries(map_points, function(item, cb){
+		    		 var asyncIndex = map_points.indexOf(item)
+		    		 console.log("--------- Use async.js ------- here is round " + asyncIndex);		    		
+		    		 //console.log("map_points.length: " + map_points.length)
+		    		
 		    		var arrPoint = [];
-		            for (var p = 0; p < map_points[i].length; p++) {
-		            	console.log("p:"+ p);
-		            	arrPoint.push(new google.maps.LatLng(map_points[i][p][0], map_points[i][p][1]));
-		            }
+		    	    
+		    		item.forEach(function(iterator, index) {
+		    			arrPoint.push(new google.maps.LatLng(item[index][0], item[index][1]));
+		    		});
+		    	    
 		            //set route request
 		            var waypts = [];
+		            
 		            for (var j = 1; j < arrPoint.length-1; j++) {
-		            	console.log("j" + j);
+		            	//console.log("j" + j);
 		                    waypts.push({
 		                            location: arrPoint[j],
 		                            stopover: true
@@ -124,8 +125,8 @@
 		            
 		            var start = arrPoint[0];
 		            var end = arrPoint[arrPoint.length-1];
-		            console.log(start);
-		            console.log(waypts);
+		            //console.log(start);
+		            //console.log(waypts);
 		            var request = {
 		                    origin: start,
 		                    destination: end,
@@ -136,37 +137,27 @@
 		            // route callback
 		            var directionsService = new google.maps.DirectionsService();
 		            directionsService.route(request, function(response, status) {
-		            	console.log(response.geocoded_waypoints);
-		            	console.log('hello');
+		            	console.log('directionsService.route start');
+		            	//console.log(response.geocoded_waypoints);
+		            
 	                    //rout callback and the result
-	                    console.log(status);
+	                    //console.log(status);
 	                    if (status == google.maps.DirectionsStatus.OK) {
 	                    	console.log('status == google.maps.DirectionsStatus.OK');
 	                    	var poly = new google.maps.Polyline({
-					    	    strokeColor: color[i],
+					    	    strokeColor: color[asyncIndex],
 					    	    strokeOpacity: 1.0,
 					    	    strokeWeight: 3
 					    	});
 	                    	var bounds = new google.maps.LatLngBounds();
 	                    	var path = response.routes[0].overview_path;
-	                    	
-	                    	
-	                    	
-	                    	console.log(path);
-	                    	
-	                    	var order = response.routes[0].waypoint_order;
-	                    	console.log(order);
-	                    	
-	                    	var leg = response.routes[0].legs;
-	                    	console.log(leg);
+	                    
 	                        $(path).each(function(index, item) {
-	                        	
-	                        	
-	                        	
 	                        	//console.log(index);
 	                          poly.getPath().push(item);
-	                        
 	                        });
+	                        
+	                        //---------------marker color setting------------------
 	                        var pinColor = "f0f700";
 	                        var pinColorEnd= "0910f2";
 	                        var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
@@ -178,7 +169,8 @@
 		                            new google.maps.Size(21, 34),
 		                            new google.maps.Point(0,0),
 		                            new google.maps.Point(10, 34));
-	                       
+	                        //---------------marker color setting end------------------
+	                        
 	                        var marker = new google.maps.Marker({
 		                          position: start,
 		                         title:"Start",
@@ -192,7 +184,6 @@
 		                          map: map
 		                        });
 	                        
-	                     
 	                        // Add a new marker at the new plotted point on the polyline.
 	                           $(waypts).each(function(index, item) {
 	                        		
@@ -200,24 +191,24 @@
 	   			                          position: item.location,
 	   			                          map: map
 	   			                        }); 
-	   	                        	});
+   	                        		});
 
-	                        
 					    	poly.setMap(map);
-					    	callback();
+					    	cb(null);
 	                    }else{
-	                    	callback();
+	                    	console.log("no callback");
 	                    }
 	                    
-		            });
-
-		    		  
-		    	}); */
-		    	
-		    	/* for(var i = 0; i < map_points.length; i++) {
-		    		
-		    	} */
-			}
+		            }); //--- end of directionsService.route
+		    	},function(err){
+	    	    // All tasks are done now
+	    	    console.log("all async iterator are done");
+	    	    if(!err) console.log("all done");
+	    	    else console.log(err);
+	    	 	 }); //-- end of async foreach
+	    	  
+			}//--- end of initialize
+			
 			//google.maps.event.addDomListener(window, 'load', initialize);
 		});
     	</script>
