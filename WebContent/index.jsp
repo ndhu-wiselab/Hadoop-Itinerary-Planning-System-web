@@ -16,6 +16,7 @@
 		  <script src="./js/async.js"></script> 
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+		<link rel="stylesheet" href="./css/mycss.css"></link>
 		<script>
 		$(document).ready(function() {
 			var opts = {
@@ -286,10 +287,7 @@
 	
 	    </div>
 	    -->
-	    
-	    
-		<!-- <div calss="row" style="height: 20px"></div> -->
-		<div calss="row">
+	    	<div calss="row">
 			 <div class="col-md-12" style="padding-left:35px">
 		      	<h1>
 		      	<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> 多天旅遊行程規劃系統</h1>
@@ -434,13 +432,12 @@
 			</div>
 			
 		</div>
+	    
+	    
+		<!-- <div calss="row" style="height: 20px"></div> -->
 		
-		<div class="footer navbar-fixed-bottom" style="background-color:#F5F5F5;height:60px">
-	      <div class="container text-center" style="padding-top:5px" >
-	        <p class="text-muted">2016, NDHU WISE lab</p>
-	        <p class="text-muted">c319,Science and Engineering Building II, 1, Sec. 2, Da Hsueh Rd., Shou-Feng, Hualien, Taiwan, 974, Republic of China</p>
-	      </div>
-	    </div>
+		
+
 	    
 	    
 	</body>
