@@ -59,8 +59,9 @@
 			        	   console.log("success");
 			        
 			        	   var parsedData = JSON.parse(data);
-			        	   console.log(parsedData);
-			        	   initialize(parsedData.map_points);
+			        	   //console.log(parsedData.schedule);
+			        	   var scheduleArr = makeScheduleStringArr(parsedData.schedule);
+			        	   initialize(parsedData.map_points, scheduleArr);
 			        	   setResultText(parsedData);
 			        	   spinner.stop();
 			        	   $("#trigger_hadoop :input").prop("checked", false);
@@ -69,6 +70,16 @@
 				    e.preventDefault(); 
 				}); 
 			});
+			
+			function makeScheduleStringArr(scheduleString) {
+				var resultArr = [];
+				scheduleString.forEach(function(perDay, index) {
+					var processedArr = perDay.slice(6).split(" >> ");
+					resultArr.push(processedArr);
+				});
+				//console.log(resultArr);
+				return resultArr;
+			}
 			
 			
 			//set schedule, path_length and weight
@@ -83,11 +94,36 @@
 				});
 			}
 			
+			
+			function sortByGoogle(googleRoute, rawRoute, firstName, lastName) {
+				//console.log(googleRoute, rawRoute, firstName, lastName);
+				var newRouteTmp = [];
+				googleRoute.forEach(function(iterator, index) {
+					newRouteTmp.push(rawRoute[iterator]);
+				});
+				
+				newRouteTmp.unshift(firstName);
+				newRouteTmp.push(lastName);
+				//console.log(newRouteTmp);
+				
+				return newRouteTmp;
+			}
+			
 			//點選第一天，第二天或第三天，地圖會重新畫該天的行程路線，另外要把一二三天的map_points存進localstorage裡面，然後
 			//需要某天的路線時就帶該天的map_point進去即可。
 			//initial
-		    function initialize(map_points) {
+		    function initialize(map_points, schedule) {
 				console.log('initialize----------');
+				
+				//console.log(map_points);
+				//console.log(schedule);
+				
+				map_points.forEach(function(iter, index) {
+					iter.forEach(function(iter_in, index_in) {
+						iter_in.push(schedule[index][index_in]);
+					});
+				});
+				
 		    	var rendererOptions = {
 		    			suppressMarkers: true
 	            };
@@ -100,20 +136,23 @@
 		    	var color = ['#000000', '#ff0000', '#0000ff'];
 		    	//var directionsService = new google.maps.DirectionsService();
 		    	
-		    	console.log(map_points);
+		    	//console.log(map_points);
 		    	 async.eachSeries(map_points, function(item, cb){
 		    		 var asyncIndex = map_points.indexOf(item)
 		    		 console.log("--------- Use async.js ------- here is round " + asyncIndex);		    		
 		    		 //console.log("map_points.length: " + map_points.length)
 		    		
 		    		var arrPoint = [];
+		    		var pointNameArr = [];
 		    	    
 		    		item.forEach(function(iterator, index) {
 		    			arrPoint.push(new google.maps.LatLng(item[index][0], item[index][1]));
+		    			pointNameArr.push(item[index][2]);
 		    		});
 		    	    
-		            //set route request
-		            var waypts = [];
+		            //set route request 
+		            var waypts = []; //途中景點
+		            var wayNameMap = []; //途中景點名稱
 		            
 		            for (var j = 1; j < arrPoint.length-1; j++) {
 		            	//console.log("j" + j);
@@ -121,7 +160,11 @@
 		                            location: arrPoint[j],
 		                            stopover: true
 		                    });
+		                    
+		                    wayNameMap.push(pointNameArr[j]);
 		            }
+		            
+		           // console.log(wayNameMap);
 		            
 		            var start = arrPoint[0];
 		            var end = arrPoint[arrPoint.length-1];
@@ -139,6 +182,12 @@
 		            directionsService.route(request, function(response, status) {
 		            	console.log('directionsService.route start');
 		            	//console.log(response.geocoded_waypoints);
+		            	
+		            	var rightWayStringArr = sortByGoogle(response.routes[0].waypoint_order, wayNameMap, pointNameArr[0], pointNameArr[pointNameArr.length-1]);
+		            	console.log("==========rightWayStringArr=======");
+		            	console.log(rightWayStringArr);
+		            	//console.log(response.routes[0].waypoint_order); //ordered route by google
+		            	//console.log(response.routes[0].overview_path);
 		            
 	                    //rout callback and the result
 	                    //console.log(status);
