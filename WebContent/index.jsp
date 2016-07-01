@@ -115,33 +115,16 @@
 			//initial
 		    function initialize(map_points, schedule) {
 				console.log('initialize----------');
-				
-				//console.log(map_points);
-				//console.log(schedule);
-				
+			
 				map_points.forEach(function(iter, index) {
 					iter.forEach(function(iter_in, index_in) {
 						iter_in.push(schedule[index][index_in]);
 					});
 				});
-				
-		    	var rendererOptions = {
-		    			suppressMarkers: true
-	            };
-		    	var startPoint = new google.maps.LatLng(24.162084,121.287389);
-		    	map = new google.maps.Map(document.getElementById('map-canvas'), {
-		    		zoom: 8,
-		    		mapTypeId: google.maps.MapTypeId.ROADMAP,
-		    		center: startPoint
-		    	});
-		    	var color = ['#000000', '#ff0000', '#0000ff'];
-		    	//var directionsService = new google.maps.DirectionsService();
-		    	
-		    	//console.log(map_points);
+			
 		    	 async.eachSeries(map_points, function(item, cb){
 		    		 var asyncIndex = map_points.indexOf(item)
 		    		 console.log("--------- Use async.js ------- here is round " + asyncIndex);		    		
-		    		 //console.log("map_points.length: " + map_points.length)
 		    		
 		    		var arrPoint = [];
 		    		var pointNameArr = [];
@@ -156,21 +139,13 @@
 		            var wayNameMap = []; //途中景點名稱
 		            
 		            for (var j = 1; j < arrPoint.length-1; j++) {
-		            	//console.log("j" + j);
-		                    waypts.push({
-		                            location: arrPoint[j],
-		                            stopover: true
-		                    });
-		                    
+		                    waypts.push({location: arrPoint[j],stopover: true});
 		                    wayNameMap.push(pointNameArr[j]);
 		            }
-		            
-		           // console.log(wayNameMap);
-		            
+		            		            
 		            var start = arrPoint[0];
 		            var end = arrPoint[arrPoint.length-1];
-		            //console.log(start);
-		            //console.log(waypts);
+		         
 		            var request = {
 		                    origin: start,
 		                    destination: end,
@@ -180,80 +155,20 @@
 		            };
 		            // route callback
 		            var directionsService = new google.maps.DirectionsService();
-		            directionsService.route(request, function(response, status) {
-		            	console.log('directionsService.route start');
-		            	//console.log(response.geocoded_waypoints);
-		            	
-		            	var rightWayStringArr = sortByGoogle(response.routes[0].waypoint_order, wayNameMap, pointNameArr[0], pointNameArr[pointNameArr.length-1]);
-		            	console.log("==========rightWayStringArr=======");
-		            	console.log(rightWayStringArr);
-		            	//console.log(response.routes[0].waypoint_order); //ordered route by google
-		            	//console.log(response.routes[0].overview_path);
-		            
-	                    //rout callback and the result
-	                    //console.log(status);
+		            directionsService.route(request, function(response, status) {		        
 	                    if (status == google.maps.DirectionsStatus.OK) {
 	                    	console.log('status == google.maps.DirectionsStatus.OK');
-	                    	var poly = new google.maps.Polyline({
-					    	    strokeColor: color[asyncIndex],
-					    	    strokeOpacity: 1.0,
-					    	    strokeWeight: 3
-					    	});
-	                    	var bounds = new google.maps.LatLngBounds();
 	                    	var path = response.routes[0].overview_path;
-	                    
-	                        $(path).each(function(index, item) {
-	                        	//console.log(index);
-	                          poly.getPath().push(item);
-	                        });
-	                        
-	                        //---------------marker color setting------------------
-	                        var pinColor = "f0f700";
-	                        var pinColorEnd= "0910f2";
-	                        var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
-	                            new google.maps.Size(21, 34),
-	                            new google.maps.Point(0,0),
-	                            new google.maps.Point(10, 34));
-	                        
-	                        var pinImageEnd = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColorEnd,
-		                            new google.maps.Size(21, 34),
-		                            new google.maps.Point(0,0),
-		                            new google.maps.Point(10, 34));
-	                        //---------------marker color setting end------------------
-	                        
-	                        var marker = new google.maps.Marker({
-		                          position: start,
-		                         title:"Start",
-		                         icon: pinImage,
-		                          map: map
-		                        });
-	                        var markerEnd = new google.maps.Marker({
-		                          position: end,
-		                          title: "End",
-		                         icon: pinImageEnd,
-		                          map: map
-		                        });
-	                        
-	                        // Add a new marker at the new plotted point on the polyline.
-	                           $(waypts).each(function(index, item) {
-	                        		
-	   	                        	 var marker = new google.maps.Marker({
-	   			                          position: item.location,
-	   			                          map: map
-	   			                        }); 
-   	                        		});
-
-					    	poly.setMap(map);
+	                    	var rightWayStringArr = sortByGoogle(response.routes[0].waypoint_order, wayNameMap, pointNameArr[0], pointNameArr[pointNameArr.length-1]);
+			            	console.log(rightWayStringArr);	    
+	                        					    
+					    	var forStorage = [path, rightWayStringArr, start, end, waypts];
+					    	localStorage.setItem("day" + asyncIndex, JSON.stringify(forStorage));
 					    	
-					    	var fors = [path, rightWayStringArr, start, end, waypts];
-					    	
-					    
-					    	localStorage.setItem("day" + asyncIndex, JSON.stringify(fors));
 					    	cb(null);
 	                    }else{
 	                    	console.log("no callback");
-	                    }
-	                    
+	                    }	                    
 		            }); //--- end of directionsService.route
 		    	},function(err){
 	    	    // All tasks are done now
