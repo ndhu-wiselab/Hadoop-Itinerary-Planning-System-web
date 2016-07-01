@@ -48,6 +48,7 @@
 			
 			
 			$("#trigerJobBtn").click(function() {
+				localStorage.clear();
 				spinner.spin(target);
 			 	$("#trigger_hadoop").unbind('submit').submit(function(e) {
 				    var url = "./aco"; 
@@ -243,6 +244,11 @@
    	                        		});
 
 					    	poly.setMap(map);
+					    	
+					    	var fors = [path, rightWayStringArr, start, end, waypts];
+					    	
+					    
+					    	localStorage.setItem("day" + asyncIndex, JSON.stringify(fors));
 					    	cb(null);
 	                    }else{
 	                    	console.log("no callback");
