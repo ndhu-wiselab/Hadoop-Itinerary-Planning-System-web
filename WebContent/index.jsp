@@ -63,7 +63,7 @@
 			        	   //console.log(parsedData.schedule);
 			        	   var scheduleArr = makeScheduleStringArr(parsedData.schedule);
 			        	   initialize(parsedData.map_points, scheduleArr);
-			        	   setResultText(parsedData);
+			        	   //setResultText(parsedData);
 			        	   spinner.stop();
 			        	   $("#trigger_hadoop :input").prop("checked", false);
 			           }
@@ -84,15 +84,21 @@
 			
 			
 			//set schedule, path_length and weight
-			function setResultText(data) {
-				//console.log(data.sum_weight);
-				//console.log(data.sum_pathlength);
-				$('#weight').text(data.sum_weight);
-				$('#path_length').text(data.sum_pathlength);
+			function setResultText(schedule) {
+				
+				
 				$('#schedule').children().remove();
-				data.schedule.forEach(function(perDay, index) {
-					$('#schedule').append("<p><span class='label label-warning'>map</span> " + perDay + "</p>");
+				schedule.forEach(function(perDay, index) {
+					$('#schedule').append("<p><span id='"+index+"' class='label label-warning showmap'>Day "+(index+1)+" map</span> " + perDay + "</p>");
 				});
+				
+				$('.showmap').click(function() {
+					var myID = $(this).attr("id");
+					//alert(myID);
+					$('#resultNumber').html("執行結果 Day "+ (parseInt(myID)+1));
+					drawGoogleMap(JSON.parse(localStorage['day'+myID])[0], JSON.parse(localStorage['day'+myID])[1], JSON.parse(localStorage['day'+myID])[2], JSON.parse(localStorage['day'+myID])[3], JSON.parse(localStorage['day'+myID])[4]);
+				});
+				console.log("setResultText end");
 			}
 			
 			
@@ -173,11 +179,94 @@
 		    	},function(err){
 	    	    // All tasks are done now
 	    	    console.log("all async iterator are done");
-	    	    if(!err) console.log("all done");
-	    	    else console.log(err);
+	    	    if(!err) {
+	    	    	var showStringArr = [];
+	    	    	for(var i = 0; i < localStorage.length; i++) {
+	    	    		var parsedArr = JSON.parse(localStorage['day'+i]);
+	    	    		var pointString = parsedArr[1];
+	    	    		var showString = pointString.join(" >> ");
+	    	    		//console.log(showString);
+	    	    		showStringArr.push(showString);
+	    	    	}
+	    	    	setResultText(showStringArr);
+					drawGoogleMap(JSON.parse(localStorage['day0'])[0], JSON.parse(localStorage['day0'])[1], JSON.parse(localStorage['day0'])[2], JSON.parse(localStorage['day0'])[3], JSON.parse(localStorage['day0'])[4]);
+					$('#resultNumber').html("執行結果 Day 1");
+	    	    	console.log("all done");
+	    	    } else {
+	    	    	console.log(err);}
 	    	 	 }); //-- end of async foreach
 	    	  
 			}//--- end of initialize
+			
+			function drawGoogleMap(path, rightWayStringArr, start, end, waypts) {
+				console.log(path, rightWayStringArr, start, end, waypts);
+					var rendererOptions = {
+						    suppressMarkers: true
+						};
+					var startPoint = new google.maps.LatLng(24.032340, 121.602128);
+					 map = new google.maps.Map(document.getElementById('map-canvas'), {
+					    zoom: 9,
+					    mapTypeId: google.maps.MapTypeId.ROADMAP,
+					    center: startPoint
+					});
+					//var color = ['#000000', '#ff0000', '#0000ff'];
+
+
+
+					var poly = new google.maps.Polyline({
+					    strokeColor: '#000000',
+					    strokeOpacity: 1.0,
+					    strokeWeight: 3
+					});
+					
+					//var bounds = new google.maps.LatLngBounds();
+
+					$(path).each(function(index, item) {
+					    //console.log(item);
+					    var formatItem = new google.maps.LatLng(item)
+					    poly.getPath().push(formatItem);
+					});
+
+					poly.setMap(map);
+					//---------------marker color setting------------------
+					var pinColor = "f0f700";
+					var pinColorEnd = "0910f2";
+					var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
+					    new google.maps.Size(21, 34),
+					    new google.maps.Point(0, 0),
+					    new google.maps.Point(10, 34));
+
+					var pinImageEnd = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColorEnd,
+					    new google.maps.Size(21, 34),
+					    new google.maps.Point(0, 0),
+					    new google.maps.Point(10, 34));
+					//---------------marker color setting end------------------
+
+					var marker = new google.maps.Marker({
+					    position: start,
+					    title: "Start",
+					    icon: pinImage,
+					    map: map
+					});
+					var markerEnd = new google.maps.Marker({
+					    position: end,
+					    title: "End",
+					    icon: pinImageEnd,
+					    map: map
+					});
+
+					// Add a new marker at the new plotted point on the polyline.
+					$(waypts).each(function(index, item) {
+
+					    var marker = new google.maps.Marker({
+					        position: item.location,
+					        map: map
+					    });
+					});
+					
+					
+				
+			}//---------drawGoogleMap End---------------
 			
 			//google.maps.event.addDomListener(window, 'load', initialize);
 		});
@@ -316,7 +405,7 @@
 			
 			 <div class="panel panel-success">
 			      <div class="panel-heading">
-			      	<h3 class="panel-title">執行結果</h3> 
+			      	<h3 class="panel-title" id="resultNumber">執行結果</h3> 
 			      </div>
 			      <div class="panel-body">
 			      		<div class="row" style="padding: 10px">
