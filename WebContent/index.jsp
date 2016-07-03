@@ -11,7 +11,7 @@
 		<title>多天旅遊行程規劃系統</title>
 		<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
 		 <script src="https://malsup.github.io/jquery.form.js"></script> 
-		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyAKgAgS7bKlYDHCW2sXGTCY5ZNcJkrhZHs"></script>
 		<script src="http://spin.js.org/spin.min.js"></script>
 		  <script src="./js/async.js"></script> 
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
@@ -97,7 +97,7 @@
 					var myID = $(this).attr("id");
 					//alert(myID);
 					$('#resultNumber').html("執行結果 Day "+ (parseInt(myID)+1));
-					drawGoogleMap(JSON.parse(localStorage['day'+myID])[0], JSON.parse(localStorage['day'+myID])[1], JSON.parse(localStorage['day'+myID])[2], JSON.parse(localStorage['day'+myID])[3], JSON.parse(localStorage['day'+myID])[4]);
+					drawGoogleMap(JSON.parse(localStorage['day'+myID])[0], JSON.parse(localStorage['day'+myID])[1], JSON.parse(localStorage['day'+myID])[2], JSON.parse(localStorage['day'+myID])[3], JSON.parse(localStorage['day'+myID])[4], JSON.parse(localStorage['day'+myID])[5]);
 				});
 				console.log("setResultText end");
 			}
@@ -169,7 +169,9 @@
 	                    	var rightWayStringArr = sortByGoogle(response.routes[0].waypoint_order, wayNameMap, pointNameArr[0], pointNameArr[pointNameArr.length-1]);
 			            	console.log(rightWayStringArr);	    
 	                        					    
-					    	var forStorage = [path, rightWayStringArr, start, end, waypts];
+			            	var color = ['#000000', '#ff0000', '#0000ff'];
+			            	
+					    	var forStorage = [path, rightWayStringArr, start, end, waypts, color[asyncIndex]];
 					    	localStorage.setItem("day" + asyncIndex, JSON.stringify(forStorage));
 					    	
 					    	cb(null);
@@ -190,7 +192,7 @@
 	    	    		showStringArr.push(showString);
 	    	    	}
 	    	    	setResultText(showStringArr);
-					drawGoogleMap(JSON.parse(localStorage['day0'])[0], JSON.parse(localStorage['day0'])[1], JSON.parse(localStorage['day0'])[2], JSON.parse(localStorage['day0'])[3], JSON.parse(localStorage['day0'])[4]);
+					drawGoogleMap(JSON.parse(localStorage['day0'])[0], JSON.parse(localStorage['day0'])[1], JSON.parse(localStorage['day0'])[2], JSON.parse(localStorage['day0'])[3], JSON.parse(localStorage['day0'])[4], JSON.parse(localStorage['day0'])[5]);
 					$('#resultNumber').html("執行結果 Day 1");
 	    	    	console.log("all done");
 	    	    } else {
@@ -199,7 +201,7 @@
 	    	  
 			}//--- end of initialize
 			
-			function drawGoogleMap(path, rightWayStringArr, start, end, waypts) {
+			function drawGoogleMap(path, rightWayStringArr, start, end, waypts, pathcolor) {
 				console.log(path, rightWayStringArr, start, end, waypts);
 					var rendererOptions = {
 						    suppressMarkers: true
@@ -215,7 +217,7 @@
 
 
 					var poly = new google.maps.Polyline({
-					    strokeColor: '#000000',
+					    strokeColor: pathcolor,
 					    strokeOpacity: 1.0,
 					    strokeWeight: 3
 					});
